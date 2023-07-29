@@ -1,5 +1,6 @@
 target/
 out/
+src/main/java/wiadrodanych/streams/models/deserializers/JsonNodeBooleanStringDeserializer.java
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
