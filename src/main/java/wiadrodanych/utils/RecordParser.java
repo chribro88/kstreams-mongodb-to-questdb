@@ -19,7 +19,7 @@ public class RecordParser {
     public static final JsonPointer DOCUMENT_AFTER_POINTER = JsonPointer.compile("/"+DOCUMENT_AFTER_FIELD);
     public static final JsonPointer DOCUMENT_UPDATE_POINTER = JsonPointer.compile("/"+DOCUMENT_UPDATE_FIELD);
     public static final JsonPointer UPDATED_FIELDS_POINTER = JsonPointer.compile("/"+DOCUMENT_UPDATE_FIELD + "/updatedFields");
-    public static final String DOCUMENT_KEY = "networkId";
+    public static final String DOCUMENT_KEY = "documentId";
     public static final String DOCUMENT_TIMESTAMP = "_accessedDate";
     
     private JsonNodeFactory nodeFactory;
