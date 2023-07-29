@@ -34,7 +34,6 @@ public class MongoDBToQuestDBStream {
 
     public MongoDBToQuestDBStream() {
         inputTopic = EnvTools.getEnvValue(EnvTools.INPUT_TOPIC, "mongodb1.database_name.collection_name");
-        // inputTopic = EnvTools.getEnvValue(EnvTools.INPUT_TOPIC, "cdc.carsalesdb.listings.bytearray");
         outputTopic = EnvTools.getEnvValue(EnvTools.OUTPUT_TOPIC_PREFIX, "etl.database_name.collection_name");
     }
 
