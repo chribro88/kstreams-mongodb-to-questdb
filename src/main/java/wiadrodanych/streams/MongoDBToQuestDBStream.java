@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import wiadrodanych.streams.models.serdes.BsonPOJODeserializer;
 import wiadrodanych.streams.models.serdes.JsonPOJOSerializer;
-import wiadrodanych.utils.RecordParser;
+import wiadrodanych.utils.RecordRouter;
 import wiadrodanych.utils.EnvTools;
 
 import java.util.HashMap;
@@ -33,8 +33,8 @@ public class MongoDBToQuestDBStream {
     public String outputTopic;
 
     public MongoDBToQuestDBStream() {
-        inputTopic = EnvTools.getEnvValue(EnvTools.INPUT_TOPIC, "mongodb1.database_name.collection_name");
-        outputTopic = EnvTools.getEnvValue(EnvTools.OUTPUT_TOPIC_PREFIX, "etl.database_name.collection_name");
+        inputTopic = EnvTools.getEnvValue(EnvTools.INPUT_TOPIC, "mongodb1.test.example");
+        outputTopic = EnvTools.getEnvValue(EnvTools.OUTPUT_TOPIC_PREFIX, "etl.test.example");
     }
 
     public static void main(String[] args) throws Exception {
@@ -79,12 +79,12 @@ public class MongoDBToQuestDBStream {
 
     public Topology createTopology() {
         final StreamsBuilder builder = new StreamsBuilder();
-        final RecordParser parser = new RecordParser();
+        final RecordRouter router = new RecordRouter();
         final Serde<JsonNode> jsonSerde = createJsonSerde();       
     
 
-        final KStream<JsonNode, JsonNode> recordListings = builder.stream(inputTopic, Consumed.with(jsonSerde, jsonSerde));
-        final KStream<JsonNode, JsonNode> routeNestedJson = recordListings.flatMapValues((key, value)  -> parser.createIndividualRecords(value));
+        final KStream<JsonNode, JsonNode> records = builder.stream(inputTopic, Consumed.with(jsonSerde, jsonSerde));
+        final KStream<JsonNode, JsonNode> routeNestedJson = records.flatMapValues((key, value)  -> router.createIndividualRecords(value));
 
         routeNestedJson.to((key, value, recordContext) -> {
             JsonNode topic = value.at("/topic");

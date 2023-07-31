@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RecordParser {
+public class RecordRouter {
     public static final String DOCUMENT_BEFORE_FIELD = "fullDocumentBeforeChange";
     public static final String DOCUMENT_AFTER_FIELD = "fullDocument";
     public static final String DOCUMENT_UPDATE_FIELD = "updateDescription";
@@ -20,11 +20,11 @@ public class RecordParser {
     public static final JsonPointer DOCUMENT_UPDATE_POINTER = JsonPointer.compile("/"+DOCUMENT_UPDATE_FIELD);
     public static final JsonPointer UPDATED_FIELDS_POINTER = JsonPointer.compile("/"+DOCUMENT_UPDATE_FIELD + "/updatedFields");
     public static final String DOCUMENT_KEY = "documentId";
-    public static final String DOCUMENT_TIMESTAMP = "_accessedDate";
+    public static final String DOCUMENT_TIMESTAMP = "timestamp";
     
     private JsonNodeFactory nodeFactory;
 
-    public RecordParser() {
+    public RecordRouter() {
         // Initialize the JsonNodeFactory when the class is instantiated.
         this.nodeFactory = JsonNodeFactory.instance;
     }
@@ -297,6 +297,8 @@ public class RecordParser {
         switch (operationType.asText()) {
           case "update": {
             document = updateDescription.get("updatedFields");
+            removeDocumentIDs((ObjectNode) documentBefore);
+            documentBeforeAndUpdated.set( DOCUMENT_BEFORE_FIELD, documentBefore);
             break;
           }
           case "insert": {
@@ -308,13 +310,9 @@ public class RecordParser {
         
         addPayloadTimestamp(payload, document);
         addPayloadJsonPath(payload);
+        
         removeDocumentIDs((ObjectNode) document);
-        removeDocumentIDs((ObjectNode) documentBefore);
-
-        documentBeforeAndUpdated.setAll(Map.of(
-            DOCUMENT_BEFORE_FIELD, documentBefore,
-            "updatedFields", document
-        ));
+        documentBeforeAndUpdated.set("updatedFields", document);
 
         return documentBeforeAndUpdated;
     }

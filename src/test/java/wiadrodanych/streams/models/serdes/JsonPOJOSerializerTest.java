@@ -2,24 +2,16 @@ package wiadrodanych.streams.models.serdes;
 
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
-import org.bson.BsonBinaryWriter;
-import org.bson.Document;
-import org.bson.codecs.DocumentCodec;
-import org.bson.codecs.EncoderContext;
-import org.bson.io.BasicOutputBuffer;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import de.undercouch.bson4jackson.types.ObjectId;
@@ -76,7 +68,7 @@ public class JsonPOJOSerializerTest {
 
         Assert.assertEquals(2147483647, serializedDocument.path("Date").asInt());
         
-        // boolean is string
+        // boolean is string (todo: confirm nested)
         Assert.assertTrue(serializedDocument.path("isBoolean") instanceof TextNode);
         Assert.assertEquals("true", serializedDocument.path("isBoolean").asText());
 

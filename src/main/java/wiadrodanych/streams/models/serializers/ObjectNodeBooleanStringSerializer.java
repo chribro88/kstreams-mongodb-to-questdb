@@ -42,10 +42,17 @@ public class ObjectNodeBooleanStringSerializer extends JsonSerializer<ObjectNode
         for (Map.Entry<String, JsonNode> en : kids.entrySet()) {
             JsonNode value = en.getValue();
             g.writeFieldName(en.getKey());
-            if (value.isBoolean()) {
-                value = JsonNodeFactory.instance.textNode(value.asText());
+            if (value.isObject()) {
+                serialize((ObjectNode) value, g, provider);
+            } 
+            else {
+                // change boolean to string for questdb symbol (3VL)
+                if (value.isBoolean()) {
+                    value = JsonNodeFactory.instance.textNode(value.asText());
+                }
+                value.serialize(g, provider); 
             }
-            value.serialize(g, provider);
+
         }
         g.writeEndObject();
     }
